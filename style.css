@@ -683,11 +683,129 @@ input::placeholder, textarea::placeholder {
   .meals-grid { grid-template-columns: 1fr; }
   .bottom-grid { grid-template-columns: 1fr; }
   .hero { padding: 40px 20px 28px; }
-  .budget-banner { flex-direction: column; align-items: flex-start; }
-  .budget-pill { align-items: flex-start; }
+  .budget-banner { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .budget-pill { align-items: flex-start; flex-direction: row; gap: 6px; align-items: center; }
+  .budget-amount { font-size: 1.4rem; }
 }
 
 @media (max-width: 480px) {
   .hero-title { font-size: 2.8rem; }
   .action-bar { flex-direction: column; }
 }
+
+/* ── Label Row (voice button) ── */
+.label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.label-row label { margin: 0; }
+
+/* ── Voice Button ── */
+.btn-voice {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  font-family: var(--font);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  border: 1px solid rgba(110, 231, 160, 0.35);
+  border-radius: 100px;
+  background: rgba(110, 231, 160, 0.08);
+  color: var(--accent);
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.btn-voice:hover {
+  background: rgba(110, 231, 160, 0.18);
+  border-color: var(--accent);
+  box-shadow: 0 0 14px rgba(110, 231, 160, 0.2);
+}
+
+.btn-voice.listening {
+  background: rgba(248, 113, 113, 0.12);
+  border-color: var(--danger);
+  color: var(--danger);
+  animation: pulse-ring 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(248,113,113,0.4); }
+  50%       { box-shadow: 0 0 0 6px rgba(248,113,113,0); }
+}
+
+/* ── Skeleton Loader ── */
+.skeleton-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.skel-banner {
+  border-radius: var(--radius-lg);
+  height: 88px;
+  animation: shimmer 1.4s infinite;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.09) 50%,
+    rgba(255,255,255,0.04) 75%);
+  background-size: 200% 100%;
+}
+
+.skel-card {
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skel-card.tall { min-height: 180px; }
+
+.skel-line {
+  height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.05) 25%,
+    rgba(255,255,255,0.1) 50%,
+    rgba(255,255,255,0.05) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+.skel-line.w90 { width: 90%; }
+.skel-line.w80 { width: 80%; }
+.skel-line.w75 { width: 75%; }
+.skel-line.w70 { width: 70%; }
+.skel-line.w60 { width: 60%; }
+.skel-line.w50 { width: 50%; }
+
+.skel-tags { display: flex; gap: 8px; margin-top: 4px; }
+
+.skel-tag {
+  height: 22px;
+  width: 64px;
+  border-radius: 100px;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.05) 25%,
+    rgba(255,255,255,0.1) 50%,
+    rgba(255,255,255,0.05) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+/* ── Staggered card animation ── */
+.meal-card { animation: fadeInUp 0.45s ease both; }
+#breakfast-card { animation-delay: 0.05s; }
+#lunch-card     { animation-delay: 0.15s; }
+#dinner-card    { animation-delay: 0.25s; }
+
+.grocery-card       { animation: fadeInUp 0.45s 0.32s ease both; }
+.substitutions-card { animation: fadeInUp 0.45s 0.40s ease both; }
+.tips-card          { animation: fadeInUp 0.45s 0.48s ease both; }

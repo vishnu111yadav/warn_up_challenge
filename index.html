@@ -6,9 +6,10 @@
   <meta name="description" content="AI-powered personal cooking planner. Describe your day and get a tailored meal plan, grocery list, substitutions and budget breakdown — instantly." />
   <meta name="theme-color" content="#0d0d14" />
   <title>ChefAI — Personal Cooking Planner</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍳</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap&font-display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -50,12 +51,17 @@
           />
           <button class="toggle-key" id="toggle-key" type="button" aria-label="Toggle API key visibility">👁</button>
         </div>
-        <span class="hint" id="api-key-hint">🔒 Stays in your browser only. Never stored or transmitted.</span>
+        <span class="hint" id="api-key-hint">🔒 Saved locally in your browser. Never sent to any server.</span>
       </div>
 
       <!-- Day Description -->
       <div class="form-group">
-        <label for="day-description">Describe your day <span class="required">*</span></label>
+        <div class="label-row">
+          <label for="day-description">Describe your day <span class="required">*</span></label>
+          <button id="voice-btn" class="btn-voice" type="button" aria-label="Use voice input" title="Click to speak your day">
+            🎤 <span id="voice-label">Speak</span>
+          </button>
+        </div>
         <textarea
           id="day-description"
           rows="4"
@@ -129,6 +135,20 @@
 
       <!-- Error message -->
       <div id="error-msg" class="error-msg" role="alert" hidden></div>
+    </section>
+
+    <!-- ── SKELETON LOADER ── -->
+    <section id="skeleton" class="skeleton-section" hidden aria-label="Loading meal plan" aria-busy="true">
+      <div class="skel-banner glass"></div>
+      <div class="meals-grid">
+        <div class="skel-card glass"><div class="skel-line w60"></div><div class="skel-line w90"></div><div class="skel-line w75"></div><div class="skel-tags"><div class="skel-tag"></div><div class="skel-tag"></div></div></div>
+        <div class="skel-card glass"><div class="skel-line w60"></div><div class="skel-line w90"></div><div class="skel-line w75"></div><div class="skel-tags"><div class="skel-tag"></div><div class="skel-tag"></div></div></div>
+        <div class="skel-card glass"><div class="skel-line w60"></div><div class="skel-line w90"></div><div class="skel-line w75"></div><div class="skel-tags"><div class="skel-tag"></div><div class="skel-tag"></div></div></div>
+      </div>
+      <div class="bottom-grid">
+        <div class="skel-card glass tall"><div class="skel-line w50"></div><div class="skel-line w80"></div><div class="skel-line w70"></div><div class="skel-line w85"></div></div>
+        <div class="skel-card glass tall"><div class="skel-line w50"></div><div class="skel-line w80"></div><div class="skel-line w70"></div></div>
+      </div>
     </section>
 
     <!-- ── OUTPUT SECTION ── -->
