@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AI-powered personal cooking planner. Describe your day and get a tailored meal plan, grocery list, substitutions and budget breakdown — instantly." />
+  <meta name="theme-color" content="#0d0d14" />
+  <title>ChefAI — Personal Cooking Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Ambient background orbs -->
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Hero Header -->
+  <header class="hero">
+    <div class="hero-badge">✦ PromptWars · Build with AI</div>
+    <h1 class="hero-title">Chef<span class="accent">AI</span></h1>
+    <p class="hero-subtitle">
+      Describe your day. Get a personalized meal plan,<br/>
+      grocery list &amp; budget breakdown — instantly.
+    </p>
+  </header>
+
+  <main class="container" id="main-content">
+
+    <!-- ── INPUT FORM ── -->
+    <section class="form-card glass" aria-labelledby="form-heading">
+      <h2 id="form-heading" class="form-title">🗓️ Tell me about your day</h2>
+
+      <!-- API Key -->
+      <div class="form-group">
+        <label for="api-key">Gemini API Key <span class="required">*</span></label>
+        <div class="input-wrapper">
+          <input
+            type="password"
+            id="api-key"
+            placeholder="AIzaSy..."
+            autocomplete="off"
+            aria-required="true"
+            aria-describedby="api-key-hint"
+          />
+          <button class="toggle-key" id="toggle-key" type="button" aria-label="Toggle API key visibility">👁</button>
+        </div>
+        <span class="hint" id="api-key-hint">🔒 Stays in your browser only. Never stored or transmitted.</span>
+      </div>
+
+      <!-- Day Description -->
+      <div class="form-group">
+        <label for="day-description">Describe your day <span class="required">*</span></label>
+        <textarea
+          id="day-description"
+          rows="4"
+          placeholder="e.g. I have a 9am standup, gym at 6pm, and I'm hosting friends for dinner. Busy morning, relaxed afternoon..."
+          aria-required="true"
+          maxlength="600"
+        ></textarea>
+        <span class="char-count" id="char-count">0 / 600</span>
+      </div>
+
+      <!-- Row: Dietary + Servings -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="dietary">Dietary Preference</label>
+          <select id="dietary" aria-label="Dietary preference">
+            <option value="none">🍽 No restrictions</option>
+            <option value="vegetarian">🥦 Vegetarian</option>
+            <option value="vegan">🌱 Vegan</option>
+            <option value="gluten-free">🌾 Gluten-Free</option>
+            <option value="keto">🥑 Keto</option>
+            <option value="dairy-free">🥛 Dairy-Free</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="servings">Servings</label>
+          <input
+            type="number"
+            id="servings"
+            min="1"
+            max="20"
+            value="2"
+            aria-label="Number of servings"
+          />
+        </div>
+      </div>
+
+      <!-- Row: Budget + Cuisine -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="budget">Budget (₹)</label>
+          <input
+            type="number"
+            id="budget"
+            min="0"
+            placeholder="e.g. 500"
+            aria-label="Total budget in rupees"
+          />
+        </div>
+        <div class="form-group">
+          <label for="cuisine">Cuisine Preference</label>
+          <select id="cuisine" aria-label="Cuisine preference">
+            <option value="any">🌍 Any cuisine</option>
+            <option value="indian">🇮🇳 Indian</option>
+            <option value="italian">🇮🇹 Italian</option>
+            <option value="chinese">🇨🇳 Chinese</option>
+            <option value="mediterranean">🫒 Mediterranean</option>
+            <option value="mexican">🌮 Mexican</option>
+            <option value="japanese">🍱 Japanese</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- CTA Button -->
+      <button id="generate-btn" class="btn-primary" aria-label="Generate my personalized meal plan">
+        <span class="btn-text">✨ Generate My Plan</span>
+        <span class="btn-loader" hidden>
+          <span class="spinner" aria-hidden="true"></span>
+          <span>Planning your day...</span>
+        </span>
+      </button>
+
+      <!-- Error message -->
+      <div id="error-msg" class="error-msg" role="alert" hidden></div>
+    </section>
+
+    <!-- ── OUTPUT SECTION ── -->
+    <section id="output" class="output-section" hidden aria-live="polite" aria-label="Generated meal plan">
+
+      <!-- Budget Banner -->
+      <div id="budget-banner" class="budget-banner glass full-width">
+        <div class="budget-icon-wrap" id="budget-icon-wrap">💰</div>
+        <div class="budget-info">
+          <h3 id="budget-verdict" class="budget-verdict"></h3>
+          <p id="budget-detail" class="budget-detail"></p>
+        </div>
+        <div class="budget-pill">
+          <span id="budget-estimated" class="budget-amount"></span>
+          <span class="budget-label">estimated</span>
+        </div>
+      </div>
+
+      <!-- Meal Plan -->
+      <div class="meals-section full-width">
+        <h2 class="section-title">🍽️ Your Day's Meal Plan</h2>
+        <div class="meals-grid">
+
+          <article class="meal-card glass" id="breakfast-card" aria-label="Breakfast">
+            <div class="meal-time-badge">🌅 Breakfast</div>
+            <h3 id="breakfast-name" class="meal-name"></h3>
+            <p id="breakfast-desc" class="meal-desc"></p>
+            <div class="meal-tags">
+              <span id="breakfast-time" class="tag tag-time"></span>
+              <span id="breakfast-diff" class="tag tag-diff"></span>
+            </div>
+          </article>
+
+          <article class="meal-card glass" id="lunch-card" aria-label="Lunch">
+            <div class="meal-time-badge">☀️ Lunch</div>
+            <h3 id="lunch-name" class="meal-name"></h3>
+            <p id="lunch-desc" class="meal-desc"></p>
+            <div class="meal-tags">
+              <span id="lunch-time" class="tag tag-time"></span>
+              <span id="lunch-diff" class="tag tag-diff"></span>
+            </div>
+          </article>
+
+          <article class="meal-card glass" id="dinner-card" aria-label="Dinner">
+            <div class="meal-time-badge">🌙 Dinner</div>
+            <h3 id="dinner-name" class="meal-name"></h3>
+            <p id="dinner-desc" class="meal-desc"></p>
+            <div class="meal-tags">
+              <span id="dinner-time" class="tag tag-time"></span>
+              <span id="dinner-diff" class="tag tag-diff"></span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- Bottom Grid: Grocery + Substitutions -->
+      <div class="bottom-grid">
+
+        <!-- Grocery List -->
+        <div class="card glass grocery-card">
+          <h2 class="section-title">🛒 Grocery List</h2>
+          <ul id="grocery-list" class="grocery-list" role="list" aria-label="Grocery items"></ul>
+          <div class="card-footer">
+            <button id="copy-grocery" class="btn-secondary" aria-label="Copy grocery list to clipboard">
+              📋 Copy List
+            </button>
+          </div>
+        </div>
+
+        <!-- Substitutions -->
+        <div class="card glass substitutions-card">
+          <h2 class="section-title">🔄 Smart Substitutions</h2>
+          <div id="substitutions-list" class="substitutions-list" role="list" aria-label="Ingredient substitutions"></div>
+        </div>
+
+      </div>
+
+      <!-- Budget Tips -->
+      <div class="card glass tips-card full-width" id="tips-card">
+        <h2 class="section-title">💡 Budget Tips</h2>
+        <p id="budget-tips" class="tips-text"></p>
+      </div>
+
+      <!-- Action Bar -->
+      <div class="action-bar full-width">
+        <button id="regen-btn" class="btn-secondary" aria-label="Generate a new meal plan">🔁 Regenerate Plan</button>
+        <button id="copy-all-btn" class="btn-secondary" aria-label="Copy full meal plan to clipboard">📄 Copy Full Plan</button>
+      </div>
+
+    </section>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <p>Built for <strong>PromptWars</strong> · Google for Developers × H2S · <span class="accent">Powered by Gemini Flash</span></p>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
